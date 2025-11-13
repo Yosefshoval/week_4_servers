@@ -2,6 +2,10 @@ import re
 from fastapi import FastAPI
 import uvicorn
 import json
+import encryption_area.encrypt as cpt
+import file_handling.read_and_save as ras
+
+
 
 
 
@@ -16,163 +20,56 @@ def test():
 
 
 
-@app.get('/test/{name}')
+@app.get('/test/name')
 def save_name(name : str):
-
-
-    return {'msg': 'saved user'}
+    result = ras.save_name(name, 'names.txt')
+    if result['status'] == True:
+        return {'msg': 'saved user'}
+    return result
 
 
 
 @app.post('/caesar')
 def Caesar_cipher(body : dict):
     # body like this: Body:{ "text": string, "offset": int, "mode": "encrypt"/”decrypt” }
-    if not body.get('mode'):
-        pass
+    if not body.get('mode') or not body.get('offset') or not body.get('text'):
+        return {'problam' : 'not mode, offset or text are given.'}
 
-
-    
     if body['mode'] == 'enencrypt':
-        return { "encrypted_text": "..." }
+        encrypted_txt = cpt.encrypter(body['text'], body['offset'], cpt.ABC)   
+
+        return { "encrypted_text": encrypted_txt }
     
 
     elif body['mode'] == 'decrypt':
-        return { "decrypted_text": "..." }
+        decrypted_txt = cpt.decrypter(body['text'], body['offset'], cpt.ABC)
+
+        return { "decrypted_text": decrypted_txt }
 
 
 
 
-@app.get('/fence/encrypt/')
-def encrypt(text : str):
+@app.get('/fence/encrypt/{text}')
+def encrypt(text : dict):
+    encypted_text = cpt.rail_fence_cipher(text)
 
-    return { "encrypted_text": "..." }
+    return { "encrypted_text": encypted_text }
 
 
 
 
 @app.post('/fence/decrypt')
 def decrypt(body : dict):
+    if not body.get('text'):
+        return {'problam' : 'not text given.'}
+    
+    decrypted_text = cpt.de_rail_fence_cipher(body['text'])
 
     return { "decrypted": "..." }
 
 
 
-@app.get('/endp_data/')
+@app.get('/get_data/')
 def summery(general : bool = True, url : str | None = None):
     pass
-
-
-
-
-
-
-#endpoint data:
-[{"url": "/atbash", "method": "POST", "stats": {"total_requests_received": 12, "avg_handling_time": 10.4}}]
-
-
-
-#summery data:
-{"highest_requests": { "name": "atbash POST", "number": 17 },
-"lowest_requests": { "name": "fence GET", "number": 3 },
-"highest_handeling_time": { "name": "caesar POST", "number": 21.7 },
-"lowest": { "name": "atbash POST", "number": 7.9 }}
-
-
-
-abc = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z']
-
-
-def enc(txt : str, offset : int, abc):
-    if not re.match('^[a-zA-Z ]+$', txt):
-        return False
-    
-    abc = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z']
-    print(len(abc))
-    new = ''
-
-    for i in range(len(txt)):
-        
-        
-        if txt[i] == ' ':
-            ch = txt[i]
-        else:
-            indx = abc.index(txt[i])
-            ch = abc[(indx + offset) % len(abc)]
-
-        new += ch
-    
-    return new
-
-
-def decp(txt : str, offset : int, abc):
-    if not re.match('^[a-zA-Z ]+$', txt):
-        return False
-
-    new = ''
-    for i in range(len(txt)):
-        if txt[i] == ' ':
-            new += ' '
-        else:
-            new += abc[abc.index(txt[i]) - offset]
-    
-    return new
-
-
-
-
-
-    
-
-def rail_fence_cipher(txt : str):
-    if not re.match('^[a-zA-Z ]+$', txt):
-            return False
-
-    txt = txt.replace(' ', '')
-    evens = ''
-    odd = ''
-    
-    for i in range(len(txt)):
-        if i % 2 == 0:
-            evens += txt[i]
-        else:
-            odd += txt[i]
-        
-    enced = evens + odd
-
-    return enced
-
-
-
-def de_rail_fence_cipher(txt : str):
-    if not re.match('^[a-zA-Z ]+$', txt):
-            return False
-    
-    decrypted = ''
-
-    l = len(txt)
-    
-    evens = txt[:l // 2]
-    print('even: ',evens)
-    
-    odd = txt[l // 2:]
-    print('odd: ',odd)
-
-    for chars in range(len(evens)):
-        decrypted += evens[chars] + odd[chars]
-    
-    print(decrypted)
-    
-
-    return decrypted
-
-
-# 'abcd' = 5
-# 4 // 2 == 2 === 'ab'
-# 4 + 1 // 2 == 2 === 'de'
-
-
-# e = rail_fence_cipher('let us meet todayy')
-# print('e:', e)
-# d = de_rail_fence_cipher(e)
-# print('d:', d)
 
