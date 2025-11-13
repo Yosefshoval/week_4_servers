@@ -1,4 +1,5 @@
 import re
+import time
 from fastapi import FastAPI
 import uvicorn
 import json
@@ -6,8 +7,7 @@ import encryption_area.encrypt as cpt
 import file_handling.read_and_save as ras
 
 
-
-
+response_times = {'test/name' : [], 'caesar' : [], '/fence/encrypt/' : [], '/fence/decrypt' : []}
 
 app = FastAPI()
 
@@ -54,7 +54,9 @@ def Caesar_cipher(body : dict):
 @app.get('/fence/encrypt/{text}')
 def encrypt(text : str):
     encypted_text = cpt.rail_fence_cipher(text)
+    start = time.time()
     data = ras.read_file('endpoints_data.json')
+
     
     if not data:
         data = ras.STATE
@@ -74,6 +76,13 @@ def encrypt(text : str):
             state['method'] = 'GET'
             data.append(state)
     
+    end = time.time()
+
+    response_times['/fence/encrypt/'].append(end - start)
+    timing = sum(response_times['/fence/encrypt/']) / len(response_times['/fence/encrypt/'])
+
+    list(filter(lambda url: url['url'] == '/fence/encrypt/', data))['state']['avg_handling_time'] = timing
+
     ras.save_data(data, 'enpoints_data.json')
 
     return { "encrypted_text": encypted_text }
