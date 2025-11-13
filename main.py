@@ -54,6 +54,27 @@ def Caesar_cipher(body : dict):
 @app.get('/fence/encrypt/{text}')
 def encrypt(text : str):
     encypted_text = cpt.rail_fence_cipher(text)
+    data = ras.read_file('endpoints_data.json')
+    
+    if not data:
+        data = ras.STATE
+        data['url'] = '/fence/encrypt/'
+        data['method'] = 'GET'
+    else:
+        it_fount = False
+        
+        for endpoint in data:
+            if endpoint['url'] == '/fence/encrypt/' and endpoint['method'] == 'GET':
+                it_fount = True
+                endpoint['state']['total_requests_received'] += 1
+        
+        if not it_fount:
+            state = ras.STATE
+            state['url'] = '/fence/encrypt/'
+            state['method'] = 'GET'
+            data.append(state)
+    
+    ras.save_data(data, 'enpoints_data.json')
 
     return { "encrypted_text": encypted_text }
 

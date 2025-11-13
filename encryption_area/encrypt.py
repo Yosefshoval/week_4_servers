@@ -4,11 +4,10 @@ import re
 ABC = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z']
 
 
-def encrypter(txt : str, offset : int, abc):
+def encrypter(txt : str, offset : int, abc : list):
     if not re.match('^[a-zA-Z ]+$', txt):
         return False
     
-    abc = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z']
     print(len(abc))
     new = ''
 
@@ -26,7 +25,7 @@ def encrypter(txt : str, offset : int, abc):
     return new
 
 
-def decrypter(txt : str, offset : int, abc):
+def decrypter(txt : str, offset : int, abc : list):
     if not re.match('^[a-zA-Z ]+$', txt):
         return False
 
@@ -69,19 +68,14 @@ def de_rail_fence_cipher(txt : str):
     l = len(txt) - 1
     
     evens = txt[:(l // 2) + 1]
-    print('even: ',evens)
     
     odd = txt[(l // 2) + 1:]
-    print('odd: ',odd)
 
     for chars in range(len(odd)):
         decrypted += evens[chars] + odd[chars]
     
     if len(odd) < len(evens):
-        decrypted += evens[-1]
-
-    print(decrypted)
-    
+        decrypted += evens[-1]  
 
     return decrypted
 
