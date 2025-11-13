@@ -33,9 +33,11 @@ def save_name(name : str):
 def Caesar_cipher(body : dict):
     # body like this: Body:{ "text": string, "offset": int, "mode": "encrypt"/”decrypt” }
     if not body.get('mode') or not body.get('offset') or not body.get('text'):
+        print('problam')
         return {'problam' : 'not mode, offset or text are given.'}
 
-    if body['mode'] == 'enencrypt':
+    if body['mode'] == 'encrypt':
+        print('en')
         encrypted_txt = cpt.encrypter(body['text'], body['offset'], cpt.ABC)   
 
         return { "encrypted_text": encrypted_txt }
@@ -50,7 +52,7 @@ def Caesar_cipher(body : dict):
 
 
 @app.get('/fence/encrypt/{text}')
-def encrypt(text : dict):
+def encrypt(text : str):
     encypted_text = cpt.rail_fence_cipher(text)
 
     return { "encrypted_text": encypted_text }
@@ -65,7 +67,7 @@ def decrypt(body : dict):
     
     decrypted_text = cpt.de_rail_fence_cipher(body['text'])
 
-    return { "decrypted": "..." }
+    return { "decrypted": decrypted_text }
 
 
 
@@ -73,3 +75,7 @@ def decrypt(body : dict):
 def summery(general : bool = True, url : str | None = None):
     pass
 
+
+
+if __name__ == '__main__':
+    uvicorn.run(app, host='localhost', port=8000)

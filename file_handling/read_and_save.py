@@ -19,12 +19,12 @@ file = Path(__file__)
 
 def save_name(name : str, file_name : str):
     try:
-        with open(f'{file.parent}/{file_name}' 'a') as f:
+        with open(f'{file.parent.parent}/{file_name}', 'a') as f:
             f.write(f'{name}\n')
         return {'status' : True}
     
     except Exception as e:
-        return {'status' : e}
+        return {'status' : str(e)}
 
 
 def read_file(file_name : str):

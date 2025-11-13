@@ -66,17 +66,20 @@ def de_rail_fence_cipher(txt : str):
     
     decrypted = ''
 
-    l = len(txt)
+    l = len(txt) - 1
     
-    evens = txt[:l // 2]
+    evens = txt[:(l // 2) + 1]
     print('even: ',evens)
     
-    odd = txt[l // 2:]
+    odd = txt[(l // 2) + 1:]
     print('odd: ',odd)
 
-    for chars in range(len(evens)):
+    for chars in range(len(odd)):
         decrypted += evens[chars] + odd[chars]
     
+    if len(odd) < len(evens):
+        decrypted += evens[-1]
+
     print(decrypted)
     
 
