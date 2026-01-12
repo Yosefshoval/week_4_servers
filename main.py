@@ -54,36 +54,36 @@ def Caesar_cipher(body : dict):
 @app.get('/fence/encrypt/{text}')
 def encrypt(text : str):
     encypted_text = cpt.rail_fence_cipher(text)
-    start = time.time()
-    data = ras.read_file('endpoints_data.json')
+    # start = time.time()
+    # data = ras.read_file('endpoints_data.json')
 
     
-    if not data:
-        data = ras.STATE
-        data['url'] = '/fence/encrypt/'
-        data['method'] = 'GET'
-    else:
-        it_fount = False
+    # if not data:
+    #     data = ras.STATE
+    #     data['url'] = '/fence/encrypt/'
+    #     data['method'] = 'GET'
+    # else:
+    #     it_fount = False
         
-        for endpoint in data:
-            if endpoint['url'] == '/fence/encrypt/' and endpoint['method'] == 'GET':
-                it_fount = True
-                endpoint['state']['total_requests_received'] += 1
+    #     for endpoint in data:
+    #         if endpoint['url'] == '/fence/encrypt/' and endpoint['method'] == 'GET':
+    #             it_fount = True
+    #             endpoint['state']['total_requests_received'] += 1
         
-        if not it_fount:
-            state = ras.STATE
-            state['url'] = '/fence/encrypt/'
-            state['method'] = 'GET'
-            data.append(state)
+    #     if not it_fount:
+    #         state = ras.STATE
+    #         state['url'] = '/fence/encrypt/'
+    #         state['method'] = 'GET'
+    #         data.append(state)
     
-    end = time.time()
+    # end = time.time()
 
-    response_times['/fence/encrypt/'].append(end - start)
-    timing = sum(response_times['/fence/encrypt/']) / len(response_times['/fence/encrypt/'])
+    # response_times['/fence/encrypt/'].append(end - start)
+    # timing = sum(response_times['/fence/encrypt/']) / len(response_times['/fence/encrypt/'])
 
-    list(filter(lambda url: url['url'] == '/fence/encrypt/', data))['state']['avg_handling_time'] = timing
+    # list(filter(lambda url: url['url'] == '/fence/encrypt/', data))['state']['avg_handling_time'] = timing
 
-    ras.save_data(data, 'enpoints_data.json')
+    # ras.save_data(data, 'enpoints_data.json')
 
     return { "encrypted_text": encypted_text }
 

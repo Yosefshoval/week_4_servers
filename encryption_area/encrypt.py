@@ -17,7 +17,7 @@ def encrypter(txt : str, offset : int, abc : list):
         if txt[i] == ' ':
             ch = txt[i]
         else:
-            indx = abc.index(txt[i])
+            indx = abc.index(txt[i].lower())
             ch = abc[(indx + offset) % len(abc)]
 
         new += ch
@@ -34,7 +34,7 @@ def decrypter(txt : str, offset : int, abc : list):
         if txt[i] == ' ':
             new += ' '
         else:
-            new += abc[abc.index(txt[i]) - offset]
+            new += abc[abc.index(txt[i]) - (offset % len(abc))]
     
     return new
 
